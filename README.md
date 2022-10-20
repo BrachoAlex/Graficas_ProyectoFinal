@@ -1,7 +1,12 @@
 # Graficas_ProyectoFinal
-Repo para el proyecto final de gráficas computacionales ago-dic 2022
+Propuesta: Un juego runner estilo Surfway Surfer infinito 
 
-Ideas: 
--Poker: Juego tradicion de Poker con movimiento de mano 3d, Movimento y repartir cartas de dealer en 3d y fondo amimado 3d PVP O VS CPU 
--Pacman: Juego de pacman en 3era persona con animaciones 3d DE COMER Y MUERTE 
--Dardos: Juego de dardos en 3d con animaciones de mano, fuerza, tiro
+Requerimientos funcionales: 
+
+El sistema mostrara una pantalla de perdedor. 
+El sistema permitirá al jugador iniciar una partida.
+El sistema permitirá al usuario salir de la partida. 
+El sistema permitirá al usuario pausar la partida. 
+El sistema mostrara el record mas alto del juego. 
+El sistema mostrara la distancia recorrida por el usuario. 
+El sistema proporcionara efectos de sonido para cada impacto.
