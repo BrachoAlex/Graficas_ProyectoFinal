@@ -1,23 +1,20 @@
 # Graficas_ProyectoFinal
-Propuesta: Un juego endless runner estilo Surfway Surfer 
+Propuesta: Un juego runner estilo Surfway Surfer o Pepsi-Man
 
-El juego constará de un personaje en la pantalla que tendrá tres posiciones, en medio, izquierda y derecha.
-El personaje podrá moverse en cualquiera de estas tres posiciones,si esta en mdio podrá moverse a la izquierda o a la derecha,  si esta de lado izquiedo ya no podrá moverse a la izquierda, solo a la derecha sienod lo mismo para cuando el personaje este de lado derecho, solo podrá moverse a la izquierda.
-El personaje podrá saltar y agacharse para evitar chicar con los obstáculos.
-Los obstáculos se generarán aleatoriamente condorme el personaje va avanzando por el juego
-Habrá un puntuaje de record por el tiempo que el personaje permanezca sin chocar
-Al chocar el personaje se acabará la partida.
+El juego constará de un personaje en pantalla que tendrá tres estados: en medio, izquierda y derecha. Nuestro protagonista podrá moverse en cualquiera de estas tres posiciones:
+•	Si está en medio podrá moverse a la izquierda o a la derecha pasando a su respectivo estado. 
+•	Si está de lado izquierdo solo podrá moverse a la derecha y pasará al estado de en medio. 
+•	Sí está de lalo derecho solo podrá moverse a la izquierda y pasará al estado de en medio. 
 
-Requerimientos funcionales: 
+El personaje podrá saltar y agacharse para evitar chocar con los obstáculos; Los obstáculos se generarán conforme el personaje va avanzando por el nivel, este avance será reflejado en un sistema de puntuaje el cual se calcula por el tiempo que ha estado corriendo además de la cantidad de obstáculos e ítems recogidos. En caso de chocar con alguno de estos obstáculos, el jugador perderá vidas y consecuentemente el juego mostrando una pantalla de game over junto con tu puntuación final. 
 
-El sistema mostrara una pantalla cuando pierdas. 
-El sistema permitirá al jugador iniciar una partida.
-El sistema permitirá al usuario salir de la partida. 
-El sistema permitirá al usuario pausar la partida. 
-El sistema mostrara el record mas alto del juego. 
-El sistema mostrara la distancia recorrida por el usuario. 
-El sistema proporcionara efectos de sonido para cada impacto.
-
-Se utilizará Threejs con objetos precargados y algunas texturas para algunos materiales adicionales 
-Se utilizara para el personaje un modelo 3d ya hecho y lo cargaremos como objeto
+Requerimientos funcionales:
+•	El sistema mostrara una pantalla cuando pierdas. 
+•	El sistema permitirá al jugador iniciar una partida.
+•	El sistema permitirá al usuario salir de la partida.
+•	El sistema permitirá al usuario pausar la partida.
+•	El sistema mostrara el récord más alto del juego. 
+•	El sistema mostrara la distancia recorrida por el usuario. 
+•	El sistema proporcionara efectos de sonido para cada impacto.
+•	Se utilizará Threejs con objetos precargados y texturas para algunos materiales adicionales como los obstáculos ítems; además de el personaje principal. 
 
