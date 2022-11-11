@@ -17,11 +17,11 @@ let currentTime = Date.now();
 
 let directionalLight = null, spotLight = null, ambientLight = null;
 
-let mapUrl = "../images/checker_large.gif";
+let mapUrl = "../images/m.jpg";
 
 let SHADOW_MAP_WIDTH = 2048, SHADOW_MAP_HEIGHT = 2048;
 
-let objMtlModelUrl = { obj: '../modelos/pepsiman/pepsiman.obj', mtl: '../modelos/pepsiman/pepsiman.mtl' };
+let objMtlModelUrl = { obj: '../modelos/Characters/pepsiman/pepsiman.obj', mtl: '../modelos/Characters/pepsiman/pepsiman.mtl' };
 
 //let objModelUrl = {obj:'../models/obj/cerberus/Cerberus.obj', map:'../models/obj/cerberus/Cerberus_A.jpg', normalMap:'../models/obj/cerberus/Cerberus_N.jpg', specularMap: '../models/obj/cerberus/Cerberus_M.jpg'};
 
@@ -32,7 +32,7 @@ function main() {
 
     createScene(canvas);
 
-    initControls();
+  
 
     update();
 }
@@ -47,61 +47,6 @@ function onProgress(xhr) {
     }
 }
 
-async function loadJson(url, objectList) {
-    try {
-        const object = await new THREE.ObjectLoader().loadAsync(url, onProgress, onError);
-
-        object.castShadow = true;
-        object.receiveShadow = false;
-
-        object.position.y = -1;
-        object.position.x = 1.5;
-
-        object.name = "jsonObject";
-
-        objectList.push(object);
-        scene.add(object);
-    }
-    catch (err) {
-        return onError(err);
-    }
-}
-
-async function loadObj(objModelUrl, objectList) {
-    try {
-        const object = await new OBJLoader().loadAsync(objModelUrl.obj, onProgress, onError);
-
-        let texture = objModelUrl.hasOwnProperty('normalMap') ? new THREE.TextureLoader().load(objModelUrl.map) : null;
-        let normalMap = objModelUrl.hasOwnProperty('normalMap') ? new THREE.TextureLoader().load(objModelUrl.normalMap) : null;
-        let specularMap = objModelUrl.hasOwnProperty('specularMap') ? new THREE.TextureLoader().load(objModelUrl.specularMap) : null;
-
-        console.log(object);
-
-        // object.traverse(function (child) 
-        // {
-        for (const child of object.children) {
-            //     if (child.isMesh)
-            child.castShadow = true;
-            child.receiveShadow = true;
-            child.material.map = texture;
-            child.material.normalMap = normalMap;
-            child.material.specularMap = specularMap;
-        }
-        // });
-
-        object.scale.set(3, 3, 3);
-        object.position.z = -3;
-        object.position.x = -1.5;
-        object.rotation.y = -3;
-        object.name = "objObject";
-
-        objectList.push(object);
-        scene.add(object);
-    }
-    catch (err) {
-        onError(err);
-    }
-}
 
 async function loadObjMtl(objModelUrl, objectList) {
     try {
@@ -126,8 +71,8 @@ async function loadObjMtl(objModelUrl, objectList) {
 
         console.log(object);
 
-        object.position.y += 1;
-        object.scale.set(0.15, 0.15, 0.15);
+        object.position.y = -2.2;
+        object.scale.set(0.015, 0.015, 0.015);
 
         objectList.push(object);
         scene.add(object);
@@ -137,26 +82,6 @@ async function loadObjMtl(objModelUrl, objectList) {
     }
 }
 
-function initControls() {
-    document.querySelector('#directionalLight').addEventListener('change', (event) => {
-        directionalLight.color.set(event.target.value);
-    });
-    document.querySelector('#directionalLight').addEventListener('input', (event) => {
-        directionalLight.color.set(event.target.value);
-    });
-    document.querySelector('#spotLight').addEventListener('change', (event) => {
-        spotLight.color.set(event.target.value);
-    });
-    document.querySelector('#spotLight').addEventListener('input', (event) => {
-        spotLight.color.set(event.target.value);
-    });
-    document.querySelector('#ambientLight').addEventListener('change', (event) => {
-        ambientLight.color.set(event.target.value);
-    });
-    document.querySelector('#ambientLight').addEventListener('input', (event) => {
-        ambientLight.color.set(event.target.value);
-    });
-}
 
 function animate() {
     let now = Date.now();
@@ -175,11 +100,6 @@ function update() {
 
     // Render the scene
     renderer.render(scene, camera);
-
-    // Spin the cube for next frame
-    animate();
-
-    // Update the camera controller
     orbitControls.update();
 }
 
@@ -232,9 +152,9 @@ function createScene(canvas) {
     scene.add(ambientLight);
 
     // Create the objects
-    loadObj(objModelUrl, objectList);
+   // loadObj(objMtlModelUrl, objectList);
 
-    loadJson(jsonModelUrl.url, objectList);
+    //loadJson(jsonModelUrl.url, objectList);
 
     loadObjMtl(objMtlModelUrl, objectList);
 
@@ -257,13 +177,7 @@ function createScene(canvas) {
     mesh.receiveShadow = true;
     group.add(mesh);
 
-    // Create the cylinder 
-    geometry = new THREE.CylinderGeometry(1, 2, 2, 50, 10);
-    mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial());
-    mesh.position.y = -3;
-    mesh.castShadow = false;
-    mesh.receiveShadow = true;
-    group.add(mesh);
+
 }
 
 main();
