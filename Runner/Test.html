@@ -2,10 +2,83 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Three.js 3D Objects</title>
+    <title>Pepsiman</title>
 
     <link rel="stylesheet" href="../css/main.css" />
     <link rel="stylesheet" href="../css/threejs3DObjects.css" />
+    <script id="fragmentShader" type="x-shader/x-fragment">
+uniform float time;
+
+//A sampler is a set of GLSL variable types. Variables of one of the sampler types must be uniforms or as function parameters. Each sampler in a program represents a single texture of a particular texture type.
+
+uniform sampler2D noiseTexture;
+uniform sampler2D glowTexture;
+
+in vec2 texCoord;
+
+void main( void ) 
+{
+	/*
+	Texture2D - Retrieves texels (i.e. the color) of a texture for the given coordinates.
+	vec4 texture2D(sampler2D sampler, vec2 coord)
+	sampler - specifies the sampler to which the texture from which texels will be retrieved is bound.
+	coord - specifies the texture coordinates at which texture will be sampled.
+	*/
+	vec4 noise = texture( noiseTexture, texCoord );
+	
+	vec2 translation = texCoord + vec2( 0, -1.0 ) * time * 8.0; 
+	
+	vec4 color = texture( glowTexture, translation );
+
+	vec4 newColor = vec4(color.r, color.g, color.b, 1.0);
+	
+	gl_FragColor = newColor;
+}
+</script>
+
+<script id="fragmentShader2" type="x-shader/x-fragment">
+	uniform float time;
+
+	//A sampler is a set of GLSL variable types. Variables of one of the sampler types must be uniforms or as function parameters. Each sampler in a program represents a single texture of a particular texture type.
+	
+	uniform sampler2D noiseTexture;
+	uniform sampler2D glowTexture;
+	
+	in vec2 texCoord;
+	
+	void main( void ) 
+	{
+		/*
+		Texture2D - Retrieves texels (i.e. the color) of a texture for the given coordinates.
+		vec4 texture2D(sampler2D sampler, vec2 coord)
+		sampler - specifies the sampler to which the texture from which texels will be retrieved is bound.
+		coord - specifies the texture coordinates at which texture will be sampled.
+		*/
+		vec4 noise = texture( noiseTexture, texCoord );
+		
+		vec2 translation = texCoord + vec2( 0, -1.0 ) * time * 8.0; 
+		
+		translation.x += noise.r;
+		translation.y += noise.g;
+		
+		vec4 color = texture( glowTexture, translation );
+	
+		vec4 newColor = vec4(color.r, color.g, color.b, 0.8);
+		
+		gl_FragColor = newColor;
+	}
+	</script>
+
+<script id="vertexShader" type="x-shader/x-vertex">
+out vec2 texCoord;
+
+void main()
+{
+	texCoord = uv;
+	vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+	gl_Position = projectionMatrix * mvPosition;
+}
+</script>
 
     <script type="module" src="Test.js">
 
