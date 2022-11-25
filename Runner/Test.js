@@ -12,7 +12,8 @@ import { OBJLoader } from '../libs/three.js/loaders/OBJLoader.js';
 import { MTLLoader } from '../libs/three.js/loaders/MTLLoader.js';
 import { FBXLoader } from '../../libs/three.js/loaders/FBXLoader.js';
 
-let renderer = null, scene = null, camera = null, group = null, objectList = [], orbitControls = null, uniforms = null, pepsiman = null;
+let renderer = null, scene = null, camera = null, group = null, objects = [], orbitControls = null, uniforms = null, pepsiman = null;
+let objBoxUrl ={obj:'../Modelos/Environment/Box/6fcc.obj',mtl:'../Modelos/Environment/Box/6fcc.mtl'};
 
 //Acciones de pepsiman
 let acciones_pepsiman = {};
@@ -40,6 +41,17 @@ function main() {
 
     resize(); 
     update();
+}
+
+function onError ( err ){ console.error( err ); };
+
+function onProgress( xhr ) 
+{
+    if ( xhr.lengthComputable ) {
+
+        const percentComplete = xhr.loaded / xhr.total * 100;
+        console.log( xhr.target.responseURL, Math.round( percentComplete, 2 ) + '% downloaded' );
+    }
 }
 
 //Funcion para animaciones pepsiman
@@ -129,6 +141,44 @@ async function loadFBX(fbxModelUrls, configuration)
     }
 }
 
+async function loadObjMtl(objModelUrl, objects)
+{
+    try
+    {
+        const mtlLoader = new MTLLoader();
+
+        const materials = await mtlLoader.loadAsync(objModelUrl.mtl, onProgress, onError);
+
+        materials.preload();
+        
+        const objLoader = new OBJLoader();
+
+        objLoader.setMaterials(materials);
+
+        const object = await objLoader.loadAsync(objModelUrl.obj, onProgress, onError);
+    
+        object.traverse(function (child) {
+            if (child.isMesh)
+            {
+                child.castShadow = true;
+                child.receiveShadow = true;
+            }
+        });
+        
+        console.log(object);
+
+        object.position.y += -5;
+        object.scale.set(0.05, 0.05, 0.05);
+
+        objects.push(object);
+        scene.add(object);
+    }
+    catch (err)
+    {
+        onError(err);
+    }
+}
+
 
 function animate()
 {
@@ -140,6 +190,17 @@ function animate()
     if(pepsiman && acciones_pepsiman[animation])
     {
         acciones_pepsiman[animation].getMixer().update(deltat * 0.001);
+    }
+
+    for(const object of objects)
+    {
+        object.position.z += 0.08 * deltat;
+
+        if(object.position.z > 0)
+            object.position.z = 100 - 200;
+
+        if(object.mixer)
+            object.mixer.update(deltat*0.000001);
     }
 }
 
@@ -219,6 +280,9 @@ function createScene(canvas) {
     const baseUrl = '../Modelos/'
     const pepsimanUrls = [baseUrl+'Slow Run.fbx', baseUrl+'Jumping.fbx']
     loadFBX(pepsimanUrls, {position: new THREE.Vector3(0, -3.5, -105), scale:new THREE.Vector3(0.03, 0.03, 0.03) })
+
+    //
+    loadObjMtl(objBoxUrl, objects);
 
     //Texturas para deformar imagen de fondo
     const COLORMAP = new THREE.TextureLoader().load("../images/blue.jpg");
