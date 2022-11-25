@@ -13,7 +13,10 @@ import { MTLLoader } from '../libs/three.js/loaders/MTLLoader.js';
 import { FBXLoader } from '../../libs/three.js/loaders/FBXLoader.js';
 
 let renderer = null, scene = null, camera = null, group = null, objects = [], orbitControls = null, uniforms = null, pepsiman = null;
+//let objBoxUrl ={obj:'../Modelos/Environment/Box/6fcc.obj',mtl:'../Modelos/Environment/Box/6fcc.mtl'};
+let objSodaUrl ={obj:'../Modelos/Items/SodaCan/obj0.obj',mtl:'../Modelos/Items/SodaCan/mtl0.mtl'};
 let objBoxUrl ={obj:'../Modelos/Environment/Box/6fcc.obj',mtl:'../Modelos/Environment/Box/6fcc.mtl'};
+let objFriesUrl ={obj:'../Modelos/Items/FrenchFries/7018.obj',mtl:'../Modelos/Items/FrenchFries/7018.mtl'};
 
 //Acciones de pepsiman
 let acciones_pepsiman = {};
@@ -288,6 +291,9 @@ function createScene(canvas) {
 
     //
     loadObjMtl(objBoxUrl, objects);
+    loadObjMtl(objSodaUrl, objects);
+    loadObjMtl(objFriesUrl, objects);
+
 
     //Texturas para deformar imagen de fondo
     const COLORMAP = new THREE.TextureLoader().load("../images/blue.jpg");
