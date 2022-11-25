@@ -167,8 +167,8 @@ async function loadObjMtl(objModelUrl, objects)
         
         console.log(object);
 
-        object.position.y += -5;
         object.scale.set(0.05, 0.05, 0.05);
+        object.position.y += -5;
 
         objects.push(object);
         scene.add(object);
@@ -194,13 +194,18 @@ function animate()
 
     for(const object of objects)
     {
-        object.position.z += 0.08 * deltat;
+        object.position.z -= 0.1 * deltat;
+        
 
-        if(object.position.z > 0)
-            object.position.z = 100 - 200;
+        if(object.position.z < -100){
+            object.position.z = 100;    
+            object.position.x = -10-Math.random()*-51;
+        }
 
         if(object.mixer)
             object.mixer.update(deltat*0.000001);
+           
+            console.log(object.position);
     }
 }
 
