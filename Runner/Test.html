@@ -79,16 +79,26 @@ void main()
 	gl_Position = projectionMatrix * mvPosition;
 }
 </script>
-
+	<link rel="stylesheet" href="test.css">
     <script type="module" src="Test.js">
 
     </script>
 
 </head>
+<body onload="main()"></body>
 
 <body>
+	    <div>    
+			
+    </div>
     <div id="container">
         <canvas id="webglcanvas" width=800 height=600></canvas>
+
+		<div id="title">
+			 <div id="Score">" "</div>
+		</div>
+
+
     </div>
 
 

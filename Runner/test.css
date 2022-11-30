@@ -1,0 +1,13 @@
+#Score{
+    color: white;
+    font-family: "consolas", monospace;
+    font-size: 19px;
+}
+
+
+
+#webglcanvas{
+    color: black;
+    border: 8px solid;
+    align-self: center;
+}
