@@ -13,13 +13,14 @@ import { MTLLoader } from '../libs/three.js/loaders/MTLLoader.js';
 import { FBXLoader } from '../../libs/three.js/loaders/FBXLoader.js';
 
 
-
-let renderer = null, scene = null, camera = null, group = null, objects = [], orbitControls = null, uniforms = null, pepsiman = null, puntuacion = 0;
+let perdiste = true;
+let renderer = null, scene = null, camera = null, group = null, objects = [], orbitControls = null, uniforms = null, pepsiman = null, puntuacion = 0, puntuacionFinal = 0;
 //let objBoxUrl ={obj:'../Modelos/Environment/Box/6fcc.obj',mtl:'../Modelos/Environment/Box/6fcc.mtl'};
 let objSodaUrl = { obj: '../Modelos/Items/SodaCan/obj0.obj', mtl: '../Modelos/Items/SodaCan/mtl0.mtl' };
 let objBoxUrl = { obj: '../Modelos/Environment/Box/6fcc.obj', mtl: '../Modelos/Environment/Box/6fcc.mtl' };
 //let objFriesUrl = { obj: '../Modelos/Items/FrenchFries/7018.obj', mtl: '../Modelos/Items/FrenchFries/7018.mtl' };
 let state = 0
+
 
 
 
@@ -41,14 +42,14 @@ let settings;
 
 const ScoreText = document.querySelector("Score");
 
-function main() {
+function main(perdiste, puntuacionFinal) {
     const canvas = document.getElementById("webglcanvas");
+
 
     createScene(canvas);
 
-
+  
     ////createPanel();
-
     resize();
     update();
 }
@@ -57,7 +58,6 @@ function onError(err) { console.error(err); };
 
 function onProgress(xhr) {
     if (xhr.lengthComputable) {
-
         const percentComplete = xhr.loaded / xhr.total * 100;
         ////    console.log( xhr.target.responseURL, Math.round( percentComplete, 2 ) + '% downloaded' );
     }
@@ -186,8 +186,13 @@ function animate() {
         acciones_pepsiman[animation].getMixer().update(deltat * 0.001);
     }
 
-    puntuacion += 0.02 * deltat;
-    //console.log(puntuacion);
+    if (perdiste != false){
+        puntuacion += 0.02 * deltat;
+        //console.log(puntuacion);
+    } else {
+        puntuacion = puntiuacion
+    }
+
 
 
 
@@ -228,8 +233,61 @@ function update() {
 
     //Muestra puntuación en pantalla
     document.getElementById("Score").innerHTML = "Puntuación:  " + Math.round(puntuacion)
+}
 
+function createScene2(canvas, puntuacionFinal) {
+        //Crea un renderer de Three.js y lo adjunta al canvas
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 
+        //Ajusta el tamaño de vision
+        renderer.setSize(canvas.width, canvas.height);
+    
+        //Activa las sombras
+        renderer.shadowMap.enabled = true;
+    
+        //Hay tres opciones: THREE.BasicShadowMap, THREE.PCFShadowMap, PCFSoftShadowMap
+        renderer.shadowMap.type = THREE.PCFShadowMap;
+    
+        //Crea una nueva escena de Three.js
+        scene = new THREE.Scene();
+    
+        //Añade una camara para poder ver la escena
+        camera = new THREE.PerspectiveCamera(90, canvas.width / canvas.height, 1, 4000);
+        camera.position.set(0, 10, -125);
+    
+        //Añade Orbit Controller para poder hacer pruebas y mover la camara
+        orbitControls = new OrbitControls(camera, renderer.domElement);
+    
+        //Añade luz direccional a los objetos
+        directionalLight = new THREE.DirectionalLight(0xaaaaaa, 6);
+    
+        //Crea y añade la iluminacion
+        directionalLight.position.set(.5, 1, -3);
+        directionalLight.target.position.set(0, 0, 0);
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
+        spotLight = new THREE.SpotLight(0xaaaaaa);
+        spotLight.position.set(0, 100, 15);
+        spotLight.target.position.set(2, 0, -2);
+        scene.add(spotLight);
+        spotLight.castShadow = true;
+        spotLight.shadow.camera.near = 1;
+        spotLight.shadow.camera.far = 200;
+        spotLight.shadow.camera.fov = 45;
+        spotLight.shadow.mapSize.width = SHADOW_MAP_WIDTH;
+        spotLight.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
+        ambientLight = new THREE.AmbientLight(0x444444, 1);
+        scene.add(ambientLight);
+    
+        //Crea un Listener de audiop y lo agrega a la camara
+        const listener = new THREE.AudioListener();
+        camera.add(listener);
+
+        document.getElementById("Perdiste").innerHTML = "Perdiste. ";
+
+        document.getElementById("Reiniciar").innerHTML = "Para reiniciar juego presione tecla 'r' ";
+
+        document.getElementById("Score").innerHTML = " Puntuación:  " + Math.round(puntuacionFinal);
 }
 
 function createScene(canvas) {
@@ -416,8 +474,19 @@ function createScene(canvas) {
             }
         }
 
+        if (event.key == "p") {
+            perdiste = false
+            puntuacionFinal = puntuacion;
+            createScene2(canvas, puntuacionFinal)
+        }
+
+        if (event.key == "r") {
+            perdiste = true;
+            window.location.reload();
+        }
+
         //console.log(state)
     })
 }
 
-main();
+main(perdiste);
