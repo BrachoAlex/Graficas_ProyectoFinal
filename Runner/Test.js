@@ -14,6 +14,7 @@ import { FBXLoader } from '../../libs/three.js/loaders/FBXLoader.js';
 
 
 let perdiste = true;
+var audioIsOn = Boolean(false);
 let renderer = null, scene = null, camera = null, group = null, objects = [], orbitControls = null, uniforms = null, pepsiman = null, puntuacion = 0, puntuacionFinal = 0;
 //let objBoxUrl ={obj:'../Modelos/Environment/Box/6fcc.obj',mtl:'../Modelos/Environment/Box/6fcc.mtl'};
 let objSodaUrl = { obj: '../Modelos/Items/SodaCan/obj0.obj', mtl: '../Modelos/Items/SodaCan/mtl0.mtl' };
@@ -52,6 +53,8 @@ function main(perdiste, puntuacionFinal) {
     ////createPanel();
     resize();
     update();
+
+
 }
 
 function onError(err) { console.error(err); };
@@ -287,6 +290,13 @@ function createScene2(canvas, puntuacionFinal) {
     document.getElementById("Reiniciar").innerHTML = "Para reiniciar juego presione tecla 'r' ";
 
     document.getElementById("Score").innerHTML = " Puntuación:  " + Math.round(puntuacionFinal);
+
+    // MENU
+
+    document.getElementById("Menu").innerHTML = "MENU";
+    document.getElementById("Controles").innerHTML = "Usa las teclas A y D para moverte"
+    document.getElementById("Jugar").innerHTML = "Para jugar pulsa R"
+    document.getElementById("Musica").innerHTML = "Usa M y N para desactivar o activar la música"
 }
 
 function createScene(canvas) {
@@ -342,10 +352,11 @@ function createScene(canvas) {
 
     //Carga el sonido y lo añade al buffer de objetos de audio 
     const audioLoader = new THREE.AudioLoader();
+
     audioLoader.load('../Audio/pepsiman.mp3', function (buffer) {
         sound.setBuffer(buffer);
         sound.setLoop(true);
-        sound.setVolume(0.5);
+        sound.setVolume(0.01);
         //sound.play();
 
     });
@@ -483,7 +494,23 @@ function createScene(canvas) {
             perdiste = true;
             window.location.reload();
         }
-
+        //console.log(state)
+    })
+    document.addEventListener("keydown", event => {
+        if (event.key == "m") {
+            if (audioIsOn == true) {
+                sound.pause()
+                audioIsOn = false
+                console.log(audioIsOn)
+            }
+        }
+        if (event.key == "n") {
+            if (audioIsOn == false) {
+                sound.play()
+                audioIsOn = true
+                console.log(audioIsOn)
+            }
+        }
         //console.log(state)
     })
 }
