@@ -18,10 +18,7 @@ let renderer = null, scene = null, camera = null, group = null, objects = [], or
 //let objBoxUrl ={obj:'../Modelos/Environment/Box/6fcc.obj',mtl:'../Modelos/Environment/Box/6fcc.mtl'};
 let objSodaUrl ={obj:'../Modelos/Items/SodaCan/obj0.obj',mtl:'../Modelos/Items/SodaCan/mtl0.mtl'};
 let objBoxUrl ={obj:'../Modelos/Environment/Box/6fcc.obj',mtl:'../Modelos/Environment/Box/6fcc.mtl'};
-let objFriesUrl ={obj:'../Modelos/Items/FrenchFries/7018.obj',mtl:'../Modelos/Items/FrenchFries/7018.mtl'};
-
-
-
+//let objFriesUrl ={obj:'../Modelos/Items/FrenchFries/7018.obj',mtl:'../Modelos/Items/FrenchFries/7018.mtl'};
 //Acciones de pepsiman
 let acciones_pepsiman = {};
 let animation = "idle";
@@ -150,7 +147,7 @@ async function loadFBX(fbxModelUrls, configuration)
     }
 }
 
-async function loadObjMtl(objModelUrl, objects,y)
+async function loadObjMtl(objModelUrl, objects,y,r)
 {
     try
     {
@@ -178,7 +175,8 @@ async function loadObjMtl(objModelUrl, objects,y)
 
         object.scale.set(0.05, 0.05, 0.05);
         object.position.y += y;
-
+        object.position.x = 
+        object.rotation.y=r;
         objects.push(object);
         scene.add(object);
     }
@@ -214,18 +212,23 @@ function animate()
 
     for(const object of objects)
     {
+        let minLimit = 50;
+        let maxLimit = 120;
+        let diff = maxLimit - minLimit;
+        let rand = Math.random();
+        rand = Math.floor(rand * diff);
+
         object.position.z -= 0.1 * deltat;
         
 
         if(object.position.z < -100){
             object.position.z = 100;    
-            object.position.x = -10-Math.random()*-51;
+            object.position.x = rand-minLimit;
         }
 
         if(object.mixer)
             object.mixer.update(deltat*0.000001);
            
-        ////console.log(object.position);
     }
 }
 
@@ -315,10 +318,12 @@ function createScene(canvas) {
     loadFBX(pepsimanUrls, {position: new THREE.Vector3(0, -3.5, -105), scale:new THREE.Vector3(0.03, 0.03, 0.03) })
 
     //
-    loadObjMtl(objBoxUrl, objects,-5);
-    loadObjMtl(objSodaUrl, objects,-4);
-    loadObjMtl(objBoxUrl, objects,-5);
-    loadObjMtl(objSodaUrl, objects,-4);
+    loadObjMtl(objBoxUrl, objects,-5,0);
+    loadObjMtl(objSodaUrl, objects,-4,.8);
+    loadObjMtl(objBoxUrl, objects,-5,0);
+    loadObjMtl(objSodaUrl, objects,-4,.8);
+    loadObjMtl(objBoxUrl, objects,-5,0);
+    loadObjMtl(objSodaUrl, objects,-4,1,.8);
     
 
 
