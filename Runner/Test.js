@@ -16,9 +16,13 @@ import { FBXLoader } from '../../libs/three.js/loaders/FBXLoader.js';
 
 let renderer = null, scene = null, camera = null, group = null, objects = [], orbitControls = null, uniforms = null, pepsiman = null, puntuacion = 0;
 //let objBoxUrl ={obj:'../Modelos/Environment/Box/6fcc.obj',mtl:'../Modelos/Environment/Box/6fcc.mtl'};
-let objSodaUrl ={obj:'../Modelos/Items/SodaCan/obj0.obj',mtl:'../Modelos/Items/SodaCan/mtl0.mtl'};
-let objBoxUrl ={obj:'../Modelos/Environment/Box/6fcc.obj',mtl:'../Modelos/Environment/Box/6fcc.mtl'};
-//let objFriesUrl ={obj:'../Modelos/Items/FrenchFries/7018.obj',mtl:'../Modelos/Items/FrenchFries/7018.mtl'};
+let objSodaUrl = { obj: '../Modelos/Items/SodaCan/obj0.obj', mtl: '../Modelos/Items/SodaCan/mtl0.mtl' };
+let objBoxUrl = { obj: '../Modelos/Environment/Box/6fcc.obj', mtl: '../Modelos/Environment/Box/6fcc.mtl' };
+//let objFriesUrl = { obj: '../Modelos/Items/FrenchFries/7018.obj', mtl: '../Modelos/Items/FrenchFries/7018.mtl' };
+let state = 0
+
+
+
 //Acciones de pepsiman
 let acciones_pepsiman = {};
 let animation = "idle";
@@ -42,35 +46,32 @@ function main() {
 
     createScene(canvas);
 
-  
+
     ////createPanel();
 
-    resize(); 
+    resize();
     update();
 }
 
-function onError ( err ){ console.error( err ); };
+function onError(err) { console.error(err); };
 
-function onProgress( xhr ) 
-{
-    if ( xhr.lengthComputable ) {
+function onProgress(xhr) {
+    if (xhr.lengthComputable) {
 
         const percentComplete = xhr.loaded / xhr.total * 100;
-    ////    console.log( xhr.target.responseURL, Math.round( percentComplete, 2 ) + '% downloaded' );
+        ////    console.log( xhr.target.responseURL, Math.round( percentComplete, 2 ) + '% downloaded' );
     }
 }
 
 //Funcion para animaciones pepsiman
-function changeAnimation(animationText)
-{
+function changeAnimation(animationText) {
     acciones_pepsiman[animation].stop();
     acciones_pepsiman[animation].reset();
     animation = animationText;
     acciones_pepsiman[animation].play();
 }
 
-function resize()
-{
+function resize() {
     const canvas = document.getElementById("webglcanvas");
     canvas.width = document.body.clientWidth;
     canvas.height = document.body.clientHeight;
@@ -80,161 +81,135 @@ function resize()
 }
 
 //Funcion para crear panel de movimientos
-function createPanel()
-{
-    const panel = new GUI({width:400});
+function createPanel() {
+    const panel = new GUI({ width: 400 });
     const folder = panel.addFolder('Animations');
     settings = {
         'correr': changeAnimation.bind(this, 'idle'),
         'saltar': changeAnimation.bind(this, 'run')
     };
-    Object.keys(settings).forEach((key)=> folder.add(settings, key));
+    Object.keys(settings).forEach((key) => folder.add(settings, key));
     folder.open();
 }
 
-function setVectorValue(vector, configuration, property, initialValues)
-{
-    if(configuration !== undefined)
-    {
-        if(property in configuration)
-        {
-   ////         console.log("setting:", property, "with", configuration[property]);
+function setVectorValue(vector, configuration, property, initialValues) {
+    if (configuration !== undefined) {
+        if (property in configuration) {
+            ////         console.log("setting:", property, "with", configuration[property]);
             vector.set(configuration[property].x, configuration[property].y, configuration[property].z);
             return;
         }
     }
- ////   console.log("setting:", property, "with", initialValues);
+    ////   console.log("setting:", property, "with", initialValues);
     vector.set(initialValues.x, initialValues.y, initialValues.z);
 }
 
 //Funcion para cargar objetos con animaciones FBX
-async function loadFBX(fbxModelUrls, configuration)
-{
-    try{
+async function loadFBX(fbxModelUrls, configuration) {
+    try {
         let pepsimanes = []
         const animations = ['idle', 'run']
         let currentAnimation = 0
 
-        for(const fbxModelUrl of fbxModelUrls)
-        {
+        for (const fbxModelUrl of fbxModelUrls) {
             let object = await new FBXLoader().loadAsync(fbxModelUrl);
 
-            setVectorValue(object.position, configuration, 'position', new THREE.Vector3(0,0,0));
+            setVectorValue(object.position, configuration, 'position', new THREE.Vector3(0, 0, 0));
             setVectorValue(object.scale, configuration, 'scale', new THREE.Vector3(1, 1, 1));
-            setVectorValue(object.rotation, configuration, 'rotation', new THREE.Vector3(0,0,0));
-            
-        ////    console.log("FBX object", object)
+            setVectorValue(object.rotation, configuration, 'rotation', new THREE.Vector3(0, 0, 0));
+
+            ////    console.log("FBX object", object)
             object.animations[0].name = animations[currentAnimation++]
             pepsimanes.push(object)
         }
 
         scene.add(pepsimanes[0])
         pepsiman = pepsimanes[0]
-        pepsimanes.forEach(element => 
-        {
-        ////    console.log('robot', element)
-            element.animations.forEach(animation =>{
-                acciones_pepsiman[animation.name] = new THREE.AnimationMixer( scene ).clipAction(animation, pepsiman);
+        pepsimanes.forEach(element => {
+            ////    console.log('robot', element)
+            element.animations.forEach(animation => {
+                acciones_pepsiman[animation.name] = new THREE.AnimationMixer(scene).clipAction(animation, pepsiman);
             })
         });
 
         acciones_pepsiman['idle'].play();
-    ////    console.log(pepsimanes)
+        ////    console.log(pepsimanes)
     }
-    catch(err)
-    {
-        console.error( err );
+    catch (err) {
+        console.error(err);
     }
 }
 
-async function loadObjMtl(objModelUrl, objects,y,r)
-{
-    try
-    {
+async function loadObjMtl(objModelUrl, objects) {
+    try {
         const mtlLoader = new MTLLoader();
 
         const materials = await mtlLoader.loadAsync(objModelUrl.mtl, onProgress, onError);
 
         materials.preload();
-        
+
         const objLoader = new OBJLoader();
 
         objLoader.setMaterials(materials);
 
         const object = await objLoader.loadAsync(objModelUrl.obj, onProgress, onError);
-    
+
         object.traverse(function (child) {
-            if (child.isMesh)
-            {
+            if (child.isMesh) {
                 child.castShadow = true;
                 child.receiveShadow = true;
             }
         });
-        
-        console.log(object);
+
+        //console.log(object);
 
         object.scale.set(0.05, 0.05, 0.05);
-        object.position.y += y;
-        object.position.x = 
-        object.rotation.y=r;
+        object.position.y += -4;
+
         objects.push(object);
         scene.add(object);
     }
-    catch (err)
-    {
+    catch (err) {
         onError(err);
     }
 }
 
 
-function animate()
-{
+function animate() {
     const now = Date.now();
     const deltat = now - currentTime;
     currentTime = now;
     let fract = deltat / duration;
     uniforms.time.value += fract;
-    if(pepsiman && acciones_pepsiman[animation])
-    {
+    if (pepsiman && acciones_pepsiman[animation]) {
         acciones_pepsiman[animation].getMixer().update(deltat * 0.001);
     }
 
-    document.addEventListener("keydown", event => {
-        if (event.key == "a") pepsiman.position.x += 0.01 
-        if (event.key == "d") pepsiman.position.x -= 0.01 
-    })
+
+    //console.log(pepsiman.position)
 
     puntuacion += 0.02 * deltat;
-    console.log(puntuacion);
+    //console.log(puntuacion);
 
-
-
-
-    for(const object of objects)
-    {
-        let minLimit = 50;
-        let maxLimit = 120;
-        let diff = maxLimit - minLimit;
-        let rand = Math.random();
-        rand = Math.floor(rand * diff);
-
+    for (const object of objects) {
         object.position.z -= 0.1 * deltat;
-        
 
-        if(object.position.z < -100){
-            object.position.z = 100;    
-            object.position.x = rand-minLimit;
+
+        if (object.position.z < -100) {
+            object.position.z = 100;
+            object.position.x = -10 - Math.random() * -51;
         }
 
-        if(object.mixer)
-            object.mixer.update(deltat*0.000001);
-           
+        if (object.mixer)
+            object.mixer.update(deltat * 0.000001);
+
+        ////console.log(object.position);
     }
 }
 
 function update() {
     requestAnimationFrame(function () { update(); });
-    
+
     //Renderea la escena
     renderer.render(scene, camera);
 
@@ -245,7 +220,9 @@ function update() {
     animate();
 
     //Muestra puntuación en pantalla
-    document.getElementById("Score").innerHTML = "Puntuación:  " +  Math.round(puntuacion)
+    document.getElementById("Score").innerHTML = "Puntuación:  " + Math.round(puntuacion)
+
+
 }
 
 function createScene(canvas) {
@@ -294,37 +271,34 @@ function createScene(canvas) {
 
     //Crea un Listener de audiop y lo agrega a la camara
     const listener = new THREE.AudioListener();
-    camera.add( listener );
+    camera.add(listener);
 
     //Crea una fuente de audio global
-   //// const sound = new THREE.Audio( listener );
+    const sound = new THREE.Audio(listener);
 
     //Carga el sonido y lo añade al buffer de objetos de audio 
     const audioLoader = new THREE.AudioLoader();
-    audioLoader.load( '../Audio/pepsiman.mp3', function( buffer ) {
-        sound.setBuffer( buffer );
-        sound.setLoop( true );
-        sound.setVolume( 0.5 );
-        sound.play();
+    audioLoader.load('../Audio/pepsiman.mp3', function (buffer) {
+        sound.setBuffer(buffer);
+        sound.setLoop(true);
+        sound.setVolume(0.5);
+        //sound.play();
+
     });
 
     //Crea un grupo para añadir los objetos 3D
     group = new THREE.Object3D;
-    scene.add(group); 
+    scene.add(group);
 
     //Ruta para añadir objetos FBX de pepsiman a arreglo de animaciones
     const baseUrl = '../Modelos/'
-    const pepsimanUrls = [baseUrl+'Slow Run.fbx', baseUrl+'Jumping.fbx']
-    loadFBX(pepsimanUrls, {position: new THREE.Vector3(0, -3.5, -105), scale:new THREE.Vector3(0.03, 0.03, 0.03) })
+    const pepsimanUrls = [baseUrl + 'Slow Run.fbx', baseUrl + 'Jumping.fbx']
+    loadFBX(pepsimanUrls, { position: new THREE.Vector3(0, -3.5, -105), scale: new THREE.Vector3(0.03, 0.03, 0.03) })
 
     //
-    loadObjMtl(objBoxUrl, objects,-5,0);
-    loadObjMtl(objSodaUrl, objects,-4,.8);
-    loadObjMtl(objBoxUrl, objects,-5,0);
-    loadObjMtl(objSodaUrl, objects,-4,.8);
-    loadObjMtl(objBoxUrl, objects,-5,0);
-    loadObjMtl(objSodaUrl, objects,-4,1,.8);
-    
+    loadObjMtl(objBoxUrl, objects);
+    loadObjMtl(objSodaUrl, objects);
+    //loadObjMtl(objFriesUrl, objects);
 
 
     //Texturas para deformar imagen de fondo
@@ -332,7 +306,7 @@ function createScene(canvas) {
     const NOISEMAP = new THREE.TextureLoader().load("../../images/cloud.png");
 
     //Uniformes para shader material
-    uniforms = 
+    uniforms =
     {
         time: { type: "f", value: 0.8 },
         noiseTexture: { type: "t", value: NOISEMAP },
@@ -346,20 +320,20 @@ function createScene(canvas) {
     //Carga la definicion de los shaders del HTML para paredes laterales y piso
     const material = new THREE.ShaderMaterial({
         uniforms: uniforms,
-        vertexShader: document.getElementById( 'vertexShader' ).textContent,
-        fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
-        
+        vertexShader: document.getElementById('vertexShader').textContent,
+        fragmentShader: document.getElementById('fragmentShader').textContent,
+
         transparent: true,
-    } );
+    });
 
     //Carga la definicion de los shaders del HTML para pared de fondo
     const material2 = new THREE.ShaderMaterial({
         uniforms: uniforms,
-        vertexShader: document.getElementById( 'vertexShader' ).textContent,
-        fragmentShader: document.getElementById( 'fragmentShader2' ).textContent,
-        
+        vertexShader: document.getElementById('vertexShader').textContent,
+        fragmentShader: document.getElementById('fragmentShader2').textContent,
+
         transparent: true,
-    } );
+    });
 
     //Crea un mapa de texturas
     const map = new THREE.TextureLoader().load(mapUrl);
@@ -379,8 +353,8 @@ function createScene(canvas) {
     //Pared de fondo
     let geometry2 = new THREE.PlaneGeometry(80, 120, 50, 50);
     let mesh2 = new THREE.Mesh(geometry2, material2);
-    mesh2.rotation.z = Math.PI /1;
-    mesh2.position.z = Math.PI /180;
+    mesh2.rotation.z = Math.PI / 1;
+    mesh2.position.z = Math.PI / 180;
     mesh2.position.y = 56;
     mesh2.rotation.y -= Math.PI / 1;
     mesh2.castShadow = false;
@@ -410,6 +384,31 @@ function createScene(canvas) {
     mesh4.castShadow = false;
     mesh4.receiveShadow = true;
     group.add(mesh4);
+    document.addEventListener("keydown", event => {
+        if (event.key == "a") {
+            if (state == 1) {
+                pepsiman.position.x = 0
+                state = 0
+            }
+            if (state == 0) {
+                pepsiman.position.x = 8
+                state = -1
+            }
+
+        }
+        if (event.key == "d") {
+            if (state == 0) {
+                pepsiman.position.x = -8
+                state = 1
+            }
+            if (state == -1) {
+                pepsiman.position.x = 0
+                state = 0
+            }
+        }
+
+        console.log(state)
+    })
 }
 
 main();
