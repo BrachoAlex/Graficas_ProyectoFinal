@@ -43,6 +43,7 @@ let settings;
 
 const ScoreText = document.querySelector("Score");
 
+
 function main(perdiste, puntuacionFinal) {
     const canvas = document.getElementById("webglcanvas");
 
@@ -235,6 +236,8 @@ function update() {
 
     //Muestra puntuación en pantalla
     document.getElementById("Score").innerHTML = "Puntuación:  " + Math.round(puntuacion)
+    document.getElementById("Controles").innerHTML = "⬅️A D➡️, M🔇 N🔊"
+
 }
 
 function createScene2(canvas, puntuacionFinal) {
@@ -289,14 +292,12 @@ function createScene2(canvas, puntuacionFinal) {
 
     document.getElementById("Reiniciar").innerHTML = "Para reiniciar juego presione tecla 'r' ";
 
-    document.getElementById("Score").innerHTML = " Puntuación:  " + Math.round(puntuacionFinal);
+    document.getElementById("Score").innerHTML = "Puntuación:  " + Math.round(puntuacionFinal);
+
 
     // MENU
 
-    document.getElementById("Menu").innerHTML = "MENU";
-    document.getElementById("Controles").innerHTML = "Usa las teclas A y D para moverte"
-    document.getElementById("Jugar").innerHTML = "Para jugar pulsa R"
-    document.getElementById("Musica").innerHTML = "Usa M y N para desactivar o activar la música"
+
 }
 
 function createScene(canvas) {
@@ -357,7 +358,7 @@ function createScene(canvas) {
     audioLoader.load('../Audio/pepsiman.mp3', function (buffer) {
         sound.setBuffer(buffer);
         sound.setLoop(true);
-        sound.setVolume(0.01);
+        sound.setVolume(0.05);
         sound.play();
 
     });
