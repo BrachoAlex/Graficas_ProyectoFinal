@@ -250,7 +250,7 @@ function createScene(canvas) {
 
     //Añade una camara para poder ver la escena
     camera = new THREE.PerspectiveCamera(90, canvas.width / canvas.height, 1, 4000);
-    camera.position.set(0, 6, -125);
+    camera.position.set(0, 10, -125);
 
     //Añade Orbit Controller para poder hacer pruebas y mover la camara
     orbitControls = new OrbitControls(camera, renderer.domElement);
