@@ -165,8 +165,7 @@ async function loadObjMtl(objModelUrl, objects, y, r) {
 
         object.scale.set(0.06, 0.06, 0.06);
         object.position.y += y + 0.45;
-        object.position.x =
-            object.rotation.y = r;
+        object.rotation.y = r;
         objects.push(object);
         scene.add(object);
     }
