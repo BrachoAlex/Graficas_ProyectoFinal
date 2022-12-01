@@ -140,72 +140,60 @@ async function loadFBX(fbxModelUrls, configuration) {
     }
 }
 
-async function loadObjMtl(objModelUrl, objects,y,r)
-{
-    try
-    {
+async function loadObjMtl(objModelUrl, objects, y, r) {
+    try {
         const mtlLoader = new MTLLoader();
 
         const materials = await mtlLoader.loadAsync(objModelUrl.mtl, onProgress, onError);
 
         materials.preload();
-        
+
         const objLoader = new OBJLoader();
 
         objLoader.setMaterials(materials);
 
         const object = await objLoader.loadAsync(objModelUrl.obj, onProgress, onError);
-    
+
         object.traverse(function (child) {
-            if (child.isMesh)
-            {
+            if (child.isMesh) {
                 child.castShadow = true;
                 child.receiveShadow = true;
             }
         });
-        
-        console.log(object);
 
-        object.scale.set(0.05, 0.05, 0.05);
-        object.position.y += y;
-        object.position.x = 
-        object.rotation.y=r;
+        //console.log(object);
+
+        object.scale.set(0.06, 0.06, 0.06);
+        object.position.y += y + 0.45;
+        object.position.x =
+            object.rotation.y = r;
         objects.push(object);
         scene.add(object);
     }
-    catch (err)
-    {
+    catch (err) {
         onError(err);
     }
 }
 
 
-function animate()
-{
+function animate() {
     const now = Date.now();
     const deltat = now - currentTime;
     currentTime = now;
     let fract = deltat / duration;
     uniforms.time.value += fract;
-    if(pepsiman && acciones_pepsiman[animation])
-    {
+    if (pepsiman && acciones_pepsiman[animation]) {
         acciones_pepsiman[animation].getMixer().update(deltat * 0.001);
     }
 
-    document.addEventListener("keydown", event => {
-        if (event.key == "a") pepsiman.position.x += 0.01 
-        if (event.key == "d") pepsiman.position.x -= 0.01 
-    })
-
     puntuacion += 0.02 * deltat;
-    console.log(puntuacion);
+    //console.log(puntuacion);
 
 
 
 
-    for(const object of objects)
-    {
-        let list = [15,0,-15];
+    for (const object of objects) {
+        let list = [15, 0, -15];
         let minLimit = 100;
         let maxLimit = 700;
         let diff = maxLimit - minLimit;
@@ -213,16 +201,16 @@ function animate()
         rand = Math.floor(rand * diff);
 
         object.position.z -= 0.1 * deltat;
-        
 
-        if(object.position.z < -100){
-            object.position.z = rand-minLimit;    
-            object.position.x =  list[Math.floor(Math.random() * list.length)];
+
+        if (object.position.z < -100) {
+            object.position.z = rand - minLimit;
+            object.position.x = list[Math.floor(Math.random() * list.length)];
         }
 
-        if(object.mixer)
-            object.mixer.update(deltat*0.0001);
-           
+        if (object.mixer)
+            object.mixer.update(deltat * 0.0001);
+
     }
 }
 
@@ -262,13 +250,13 @@ function createScene(canvas) {
 
     //Añade una camara para poder ver la escena
     camera = new THREE.PerspectiveCamera(90, canvas.width / canvas.height, 1, 4000);
-    camera.position.set(0, 6, -116);
+    camera.position.set(0, 6, -125);
 
     //Añade Orbit Controller para poder hacer pruebas y mover la camara
     orbitControls = new OrbitControls(camera, renderer.domElement);
 
     //Añade luz direccional a los objetos
-    directionalLight = new THREE.DirectionalLight(0xaaaaaa, 1);
+    directionalLight = new THREE.DirectionalLight(0xaaaaaa, 6);
 
     //Crea y añade la iluminacion
     directionalLight.position.set(.5, 1, -3);
@@ -312,13 +300,13 @@ function createScene(canvas) {
     //Ruta para añadir objetos FBX de pepsiman a arreglo de animaciones
     const baseUrl = '../Modelos/'
     const pepsimanUrls = [baseUrl + 'Slow Run.fbx', baseUrl + 'Jumping.fbx']
-    loadFBX(pepsimanUrls, { position: new THREE.Vector3(0, -3.5, -105), scale: new THREE.Vector3(0.03, 0.03, 0.03) })
+    loadFBX(pepsimanUrls, { position: new THREE.Vector3(0, -3.5, -105), scale: new THREE.Vector3(0.05, 0.05, 0.05) })
 
     //
-    loadObjMtl(objBoxUrl, objects,-5,0);
-    loadObjMtl(objSodaUrl, objects,-4,.8);
-    loadObjMtl(objBoxUrl, objects,-5,0);
-    loadObjMtl(objSodaUrl, objects,-4,.8);
+    loadObjMtl(objBoxUrl, objects, -5, 0);
+    loadObjMtl(objSodaUrl, objects, -4, .8);
+    loadObjMtl(objBoxUrl, objects, -5, 0);
+    loadObjMtl(objSodaUrl, objects, -4, .8);
 
 
     //Texturas para deformar imagen de fondo
@@ -406,19 +394,20 @@ function createScene(canvas) {
     group.add(mesh4);
     document.addEventListener("keydown", event => {
         if (event.key == "a") {
+            if (state == 0) {
+                pepsiman.position.x = 13
+                state = -1
+            }
+
             if (state == 1) {
                 pepsiman.position.x = 0
                 state = 0
-            }
-            if (state == 0) {
-                pepsiman.position.x = 8
-                state = -1
             }
 
         }
         if (event.key == "d") {
             if (state == 0) {
-                pepsiman.position.x = -8
+                pepsiman.position.x = -13
                 state = 1
             }
             if (state == -1) {
@@ -427,7 +416,7 @@ function createScene(canvas) {
             }
         }
 
-        console.log(state)
+        //console.log(state)
     })
 }
 
