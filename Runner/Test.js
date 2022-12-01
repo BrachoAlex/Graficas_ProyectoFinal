@@ -14,7 +14,7 @@ import { FBXLoader } from '../../libs/three.js/loaders/FBXLoader.js';
 
 
 let perdiste = true;
-var audioIsOn = Boolean(false);
+
 let renderer = null, scene = null, camera = null, group = null, objects = [], orbitControls = null, uniforms = null, pepsiman = null, puntuacion = 0, puntuacionFinal = 0;
 //let objBoxUrl ={obj:'../Modelos/Environment/Box/6fcc.obj',mtl:'../Modelos/Environment/Box/6fcc.mtl'};
 let objSodaUrl = { obj: '../Modelos/Items/SodaCan/obj0.obj', mtl: '../Modelos/Items/SodaCan/mtl0.mtl' };
@@ -352,12 +352,13 @@ function createScene(canvas) {
 
     //Carga el sonido y lo añade al buffer de objetos de audio 
     const audioLoader = new THREE.AudioLoader();
+    var audioIsOn = Boolean(true);
 
     audioLoader.load('../Audio/pepsiman.mp3', function (buffer) {
         sound.setBuffer(buffer);
         sound.setLoop(true);
         sound.setVolume(0.01);
-        //sound.play();
+        sound.play();
 
     });
 
