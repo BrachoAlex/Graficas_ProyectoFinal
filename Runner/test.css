@@ -9,13 +9,26 @@
     font-family: "consolas", monospace;
     font-size: 19px;
 }
-
+#Menu{
+    color: white;
+    font-family: "consolas", monospace;
+    font-size: 19px;
+}
+#Controles{
+    color: white;
+    font-family: "consolas", monospace;
+    font-size: 19px;
+}
+#Jugar{
+    color: white;
+    font-family: "consolas", monospace;
+    font-size: 19px;
+}
 #Reiniciar{
     color: white;
     font-family: "consolas", monospace;
     font-size: 19px;
 }
-
 #webglcanvas{
     color: black;
     border: 8px solid;

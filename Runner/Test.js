@@ -48,7 +48,7 @@ function main(perdiste, puntuacionFinal) {
 
     createScene(canvas);
 
-  
+
     ////createPanel();
     resize();
     update();
@@ -185,7 +185,7 @@ function animate() {
         acciones_pepsiman[animation].getMixer().update(deltat * 0.001);
     }
 
-    if (perdiste != false){
+    if (perdiste != false) {
         puntuacion += 0.02 * deltat;
         //console.log(puntuacion);
     } else {
@@ -207,8 +207,8 @@ function animate() {
         object.position.z -= 0.1 * deltat;
 
 
-        if (object.position.z < -100) {
-            object.position.z = rand - minLimit;
+        if (object.position.z < -110) {
+            object.position.z = minLimit;
             object.position.x = list[Math.floor(Math.random() * list.length)];
         }
 
@@ -235,58 +235,58 @@ function update() {
 }
 
 function createScene2(canvas, puntuacionFinal) {
-        //Crea un renderer de Three.js y lo adjunta al canvas
-        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+    //Crea un renderer de Three.js y lo adjunta al canvas
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 
-        //Ajusta el tamaño de vision
-        renderer.setSize(canvas.width, canvas.height);
-    
-        //Activa las sombras
-        renderer.shadowMap.enabled = true;
-    
-        //Hay tres opciones: THREE.BasicShadowMap, THREE.PCFShadowMap, PCFSoftShadowMap
-        renderer.shadowMap.type = THREE.PCFShadowMap;
-    
-        //Crea una nueva escena de Three.js
-        scene = new THREE.Scene();
-    
-        //Añade una camara para poder ver la escena
-        camera = new THREE.PerspectiveCamera(90, canvas.width / canvas.height, 1, 4000);
-        camera.position.set(0, 10, -125);
-    
-        //Añade Orbit Controller para poder hacer pruebas y mover la camara
-        orbitControls = new OrbitControls(camera, renderer.domElement);
-    
-        //Añade luz direccional a los objetos
-        directionalLight = new THREE.DirectionalLight(0xaaaaaa, 6);
-    
-        //Crea y añade la iluminacion
-        directionalLight.position.set(.5, 1, -3);
-        directionalLight.target.position.set(0, 0, 0);
-        directionalLight.castShadow = true;
-        scene.add(directionalLight);
-        spotLight = new THREE.SpotLight(0xaaaaaa);
-        spotLight.position.set(0, 100, 15);
-        spotLight.target.position.set(2, 0, -2);
-        scene.add(spotLight);
-        spotLight.castShadow = true;
-        spotLight.shadow.camera.near = 1;
-        spotLight.shadow.camera.far = 200;
-        spotLight.shadow.camera.fov = 45;
-        spotLight.shadow.mapSize.width = SHADOW_MAP_WIDTH;
-        spotLight.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
-        ambientLight = new THREE.AmbientLight(0x444444, 1);
-        scene.add(ambientLight);
-    
-        //Crea un Listener de audiop y lo agrega a la camara
-        const listener = new THREE.AudioListener();
-        camera.add(listener);
+    //Ajusta el tamaño de vision
+    renderer.setSize(canvas.width, canvas.height);
 
-        document.getElementById("Perdiste").innerHTML = "Perdiste. ";
+    //Activa las sombras
+    renderer.shadowMap.enabled = true;
 
-        document.getElementById("Reiniciar").innerHTML = "Para reiniciar juego presione tecla 'r' ";
+    //Hay tres opciones: THREE.BasicShadowMap, THREE.PCFShadowMap, PCFSoftShadowMap
+    renderer.shadowMap.type = THREE.PCFShadowMap;
 
-        document.getElementById("Score").innerHTML = " Puntuación:  " + Math.round(puntuacionFinal);
+    //Crea una nueva escena de Three.js
+    scene = new THREE.Scene();
+
+    //Añade una camara para poder ver la escena
+    camera = new THREE.PerspectiveCamera(90, canvas.width / canvas.height, 1, 4000);
+    camera.position.set(0, 10, -120);
+
+    //Añade Orbit Controller para poder hacer pruebas y mover la camara
+    orbitControls = new OrbitControls(camera, renderer.domElement);
+
+    //Añade luz direccional a los objetos
+    directionalLight = new THREE.DirectionalLight(0xaaaaaa, 6);
+
+    //Crea y añade la iluminacion
+    directionalLight.position.set(.5, 1, -3);
+    directionalLight.target.position.set(0, 0, 0);
+    directionalLight.castShadow = true;
+    scene.add(directionalLight);
+    spotLight = new THREE.SpotLight(0xaaaaaa);
+    spotLight.position.set(0, 100, 15);
+    spotLight.target.position.set(2, 0, -2);
+    scene.add(spotLight);
+    spotLight.castShadow = true;
+    spotLight.shadow.camera.near = 1;
+    spotLight.shadow.camera.far = 200;
+    spotLight.shadow.camera.fov = 45;
+    spotLight.shadow.mapSize.width = SHADOW_MAP_WIDTH;
+    spotLight.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
+    ambientLight = new THREE.AmbientLight(0x444444, 1);
+    scene.add(ambientLight);
+
+    //Crea un Listener de audiop y lo agrega a la camara
+    const listener = new THREE.AudioListener();
+    camera.add(listener);
+
+    document.getElementById("Perdiste").innerHTML = "Perdiste. ";
+
+    document.getElementById("Reiniciar").innerHTML = "Para reiniciar juego presione tecla 'r' ";
+
+    document.getElementById("Score").innerHTML = " Puntuación:  " + Math.round(puntuacionFinal);
 }
 
 function createScene(canvas) {
