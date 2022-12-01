@@ -150,7 +150,7 @@ async function loadFBX(fbxModelUrls, configuration)
     }
 }
 
-async function loadObjMtl(objModelUrl, objects)
+async function loadObjMtl(objModelUrl, objects,y)
 {
     try
     {
@@ -177,7 +177,7 @@ async function loadObjMtl(objModelUrl, objects)
         console.log(object);
 
         object.scale.set(0.05, 0.05, 0.05);
-        object.position.y += -5;
+        object.position.y += y;
 
         objects.push(object);
         scene.add(object);
@@ -315,9 +315,11 @@ function createScene(canvas) {
     loadFBX(pepsimanUrls, {position: new THREE.Vector3(0, -3.5, -105), scale:new THREE.Vector3(0.03, 0.03, 0.03) })
 
     //
-    loadObjMtl(objBoxUrl, objects);
-    loadObjMtl(objSodaUrl, objects);
-    loadObjMtl(objFriesUrl, objects);
+    loadObjMtl(objBoxUrl, objects,-5);
+    loadObjMtl(objSodaUrl, objects,-4);
+    loadObjMtl(objBoxUrl, objects,-5);
+    loadObjMtl(objSodaUrl, objects,-4);
+    
 
 
     //Texturas para deformar imagen de fondo
