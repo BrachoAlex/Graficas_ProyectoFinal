@@ -21,6 +21,7 @@ let objSodaUrl = { obj: '../Modelos/Items/SodaCan/obj0.obj', mtl: '../Modelos/It
 let objBoxUrl = { obj: '../Modelos/Environment/Box/6fcc.obj', mtl: '../Modelos/Environment/Box/6fcc.mtl' };
 //let objFriesUrl = { obj: '../Modelos/Items/FrenchFries/7018.obj', mtl: '../Modelos/Items/FrenchFries/7018.mtl' };
 let state = 0
+let boxes = [];
 
 
 
@@ -137,7 +138,12 @@ async function loadFBX(fbxModelUrls, configuration) {
         });
 
         acciones_pepsiman['idle'].play();
-        ////    console.log(pepsimanes)
+        const objBox = new THREE.BoxHelper(pepsiman, 0x00ff00);
+        objBox.update();
+        objBox.visible = true;
+
+        boxes.push(boxes);
+        scene.add(objBox)
     }
     catch (err) {
         console.error(err);
@@ -145,6 +151,13 @@ async function loadFBX(fbxModelUrls, configuration) {
 }
 
 async function loadObjMtl(objModelUrl, objects, y, r) {
+    let list = [15, 0, -15];
+    let minLimit = 100;
+    let maxLimit = 1000;
+    let diff = maxLimit - minLimit;
+    let rand = Math.random();
+    rand = Math.floor(rand * diff);
+
     try {
         const mtlLoader = new MTLLoader();
 
@@ -165,19 +178,29 @@ async function loadObjMtl(objModelUrl, objects, y, r) {
             }
         });
 
-        //console.log(object);
-
         object.scale.set(0.06, 0.06, 0.06);
         object.position.y += y + 0.45;
-        object.rotation.y = r;
+        object.rotation.y = r; 
+        object.position.z = rand - minLimit;
+        object.position.x = list[Math.floor(Math.random() * list.length)];
+
+        const objBox = new THREE.BoxHelper(object, 0x00ff00);
+        objBox.update();
+        objBox.visible = true;
+
+        boxes.push(boxes);
+        scene.add(objBox)
+
+        //objBox.push(object)
         objects.push(object);
         scene.add(object);
     }
     catch (err) {
         onError(err);
     }
-}
 
+    
+}
 
 function animate() {
     const now = Date.now();
@@ -189,21 +212,17 @@ function animate() {
         acciones_pepsiman[animation].getMixer().update(deltat * 0.001);
     }
 
-    if (perdiste != false) {
+    if (perdiste != false){
         puntuacion += 0.02 * deltat;
         //console.log(puntuacion);
     } else {
         puntuacion = puntiuacion
     }
 
-
-
-
-
     for (const object of objects) {
         let list = [15, 0, -15];
         let minLimit = 100;
-        let maxLimit = 700;
+        let maxLimit = 1000;
         let diff = maxLimit - minLimit;
         let rand = Math.random();
         rand = Math.floor(rand * diff);
@@ -211,15 +230,15 @@ function animate() {
         object.position.z -= 0.1 * deltat;
 
 
-        if (object.position.z < -110) {
-            object.position.z = minLimit;
+        if (object.position.z < -100) {
+            object.position.z = rand - minLimit;
             object.position.x = list[Math.floor(Math.random() * list.length)];
         }
 
         if (object.mixer)
             object.mixer.update(deltat * 0.0001);
 
-    }
+    }
 }
 
 function update() {
@@ -236,7 +255,7 @@ function update() {
 
     //Muestra puntuación en pantalla
     document.getElementById("Score").innerHTML = "Puntuación:  " + Math.round(puntuacion)
-    document.getElementById("Controles").innerHTML = "⬅️A D➡️, M🔇 N🔊"
+
 
 }
 
@@ -515,6 +534,7 @@ function createScene(canvas) {
         }
         //console.log(state)
     })
+    document.getElementById("Controles").innerHTML = "⬅️A D➡️, M🔇 N🔊"
 }
 
 main(perdiste);
