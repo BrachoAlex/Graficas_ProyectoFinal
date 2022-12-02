@@ -180,7 +180,7 @@ async function loadObjMtl(objModelUrl, objects, y, r) {
 
         object.scale.set(0.06, 0.06, 0.06);
         object.position.y += y + 0.45;
-        object.rotation.y = r; 
+        object.rotation.y = r;
         object.position.z = rand - minLimit;
         object.position.x = list[Math.floor(Math.random() * list.length)];
 
@@ -199,7 +199,7 @@ async function loadObjMtl(objModelUrl, objects, y, r) {
         onError(err);
     }
 
-    
+
 }
 
 function animate() {
@@ -212,7 +212,7 @@ function animate() {
         acciones_pepsiman[animation].getMixer().update(deltat * 0.001);
     }
 
-    if (perdiste != false){
+    if (perdiste != false) {
         puntuacion += 0.02 * deltat;
         //console.log(puntuacion);
     } else {
@@ -230,15 +230,15 @@ function animate() {
         object.position.z -= 0.1 * deltat;
 
 
-        if (object.position.z < -100) {
-            object.position.z = rand - minLimit;
+        if (object.position.z < -120) {
+            object.position.z = minLimit;
             object.position.x = list[Math.floor(Math.random() * list.length)];
         }
 
         if (object.mixer)
             object.mixer.update(deltat * 0.0001);
 
-    }
+    }
 }
 
 function update() {
